@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DreamHome Loans</title>
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
   <style>
     /* Reset & base styles */
@@ -28,7 +28,7 @@
       align-items: center;
       position: sticky;
       top: 0;
-      z-index: 1000;
+      z-index: 1100;
       box-shadow: 0 4px 15px rgba(0,0,0,0.25);
     }
     .logo { font-size: 26px; font-weight: bold; display:flex; align-items:center; letter-spacing:1px; }
@@ -62,7 +62,8 @@
     }
     .sidebar {
       position: fixed;
-      top:0; right:-250px;
+      top:0;
+      right:-250px;
       width:250px;
       height:100%;
       background: linear-gradient(180deg, #0a3d91, #1976d2);
@@ -71,10 +72,29 @@
       display:flex;
       flex-direction:column;
       gap:25px;
+      z-index: 1000; /* above overlay */
     }
     .sidebar.active { right:0; }
     .sidebar a { color:white; text-decoration:none; padding:12px 25px; font-weight:600; font-size:18px; }
     .sidebar a:hover { background:#ffd700; color:#000; border-radius:6px; }
+
+    /* Overlay behind sidebar */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease;
+      z-index: 900;
+    }
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
 
     /* Hero */
     .hero {
@@ -191,7 +211,9 @@
   <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <script>
-    (function(){ emailjs.init("YOUR_USER_ID"); })();
+    (function(){
+      emailjs.init("SqpcpVNWK9S9wn6dW"); // ✅ Public Key
+    })();
   </script>
 </head>
 <body>
@@ -213,12 +235,14 @@
     <a href="#property">Property</a>
     <a href="#contact">Contact</a>
   </div>
+  <!-- Overlay behind sidebar -->
+  <div class="sidebar-overlay"></div>
 
   <!-- Hero -->
   <section class="hero">
     <h2>Your Dream Home Awaits</h2>
     <p>Smart Loans & Reliable Property Dealing Services</p>
-    <button>Apply Now</button>
+    <button onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'});">Apply Now</button>
   </section>
 
   <!-- Features -->
@@ -277,18 +301,30 @@
       });
     });
 
-    // Sidebar toggle
+    // Sidebar toggle with overlay
     const toggle = document.querySelector(".menu-toggle");
     const sidebar = document.querySelector(".sidebar");
-    toggle.addEventListener("click", ()=>{ sidebar.classList.toggle("active"); });
+    const overlay = document.querySelector(".sidebar-overlay");
+
+    function closeSidebar(){
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+    }
+
+    toggle.addEventListener("click", ()=>{
+      sidebar.classList.toggle("active");
+      overlay.classList.toggle("active");
+    });
+
+    overlay.addEventListener("click", closeSidebar);
 
     // EmailJS form submission
     document.getElementById("contactForm").addEventListener("submit", function(e){
       e.preventDefault();
-      emailjs.sendForm("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",this)
-      .then(()=>{ alert("✅ Message sent successfully!"); }, (err)=>{ alert("❌ Failed: "+JSON.stringify(err)); });
+      emailjs.sendForm("service_mdudqil","template_nvxestm",this)
+      .then(()=>{ alert("✅ Message sent successfully!"); }, 
+            (err)=>{ alert("❌ Failed: "+JSON.stringify(err)); });
     });
   </script>
 </body>
 </html>
-
